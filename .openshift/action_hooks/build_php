@@ -8,7 +8,7 @@ function install_php() {
     pushd ${BUILD_DIR}
 
     echo '下载并安装 libmcrypt.'
-    wget wget -O libmcrypt-2.5.8.tar.gz http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz?big_mirror=0
+    wget -O libmcrypt-2.5.8.tar.gz http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz?big_mirror=0
     tar zxf libmcrypt-2.5.8.tar.gz
     cd libmcrypt-2.5.8
     ./configure --prefix=${OPENSHIFT_DATA_DIR}usr/local
@@ -102,8 +102,6 @@ function install_php() {
 }
 
 function check_php() {
-    check_libmcrypt
-    check_icu
 
     local php_bin=${ROOT_DIR}/php/bin/php
 
