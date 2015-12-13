@@ -50,31 +50,15 @@ function install_php() {
 
     if [[ ! -f config.log || `tail -n 1 config.log | tr -d '\n'` !=  'configure: exit 0' ]]; then
         echo "Configuring PHP."
-        ./configure \
-            --with-libdir=lib64 \
-            --prefix=${ROOT_DIR}/php \
-            --with-config-file-path=${ROOT_DIR}/etc/php/ \
-            --with-config-file-scan-dir=${ROOT_DIR}/etc/php/conf.d/ \
-            --with-icu-dir=${ROOT_DIR}/libs \
-            --with-mcrypt=${ROOT_DIR}/libs \
-            --with-layout=PHP \
-            --with-curl \
-            --with-pear \
-            --with-gd \
-            --with-zlib \
-            --with-mhash \
-            --with-mysql \
-            --with-pgsql \
-            --with-mysqli \
-            --with-pdo-my./configure --prefix=${OPENSHIFT_DATA_DIR}php --with-config-file-path=${OPENSHIFT_DATA_DIR}php/etc --with-mcrypt=${OPENSHIFT_DATA_DIR}usr/local \
-            --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache \
-            --disable-fileinfo --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-jpeg-dir \
-            --with-iconv-dir=/usr/local --with-freetype-dir --with-png-dir --with-zlib --disable-rpath \
-            --with-libxml-dir=/usr --enable-xml --enable-bcmath --enable-shmop --enable-exif --with-curl \
-            --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-inline-optimization \
-            --enable-mbstring --with-gd --enable-gd-native-ttf --with-openssl \
-            --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-ftp \
-            --with-gettext --enable-zip --enable-soap --disable-ipv6 --disable-debug
+        ./configure --prefix=${OPENSHIFT_DATA_DIR}php --with-config-file-path=${OPENSHIFT_DATA_DIR}php/etc --with-mcrypt=${OPENSHIFT_DATA_DIR}usr/local \
+          --with-fpm-user=www --with-fpm-group=www --enable-fpm --enable-opcache \
+          --disable-fileinfo --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-jpeg-dir \
+          --with-iconv-dir=/usr/local --with-freetype-dir --with-png-dir --with-zlib --disable-rpath \
+          --with-libxml-dir=/usr --enable-xml --enable-bcmath --enable-shmop --enable-exif --with-curl \
+          --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-inline-optimization \
+          --enable-mbstring --with-gd --enable-gd-native-ttf --with-openssl \
+          --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-ftp \
+          --with-gettext --enable-zip --enable-soap --disable-ipv6 --disable-debug
     fi
 
     echo "Compiling PHP."
