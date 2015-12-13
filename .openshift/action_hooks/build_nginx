@@ -36,7 +36,7 @@ function install_nginx() {
 
     echo "解压 tengine."
     tar xfz tengine-2.1.0.tar.gz
-    pushd tengine-2.1.0
+    cd tengine-2.1.0
 
     echo "配置 tengine."
     ./configure \
