@@ -8,3 +8,5 @@
 编译方法会在测试后发布于我的博客http://blog.feixueacg.com/
 
 本项目正在测试，请勿用于生产环境。
+
+由于使用.openshift的build文件有点问题，过几个月在写另一个版本的，这个版本就是几个shell脚本
