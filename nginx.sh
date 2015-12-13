@@ -4,7 +4,7 @@
 echo "正在下载环境安装文件"
 cd ${OPENSHIFT_HOMEDIR}/app-root/repo
 git clone https://github.com/ACGunion/openshift-php7.git php7
-cp -r ${OPENSHIFT_HOMEDIR}/app-root/repo/php7/.openshift ${OPENSHIFT_HOMEDIR}/app-root/repo/php7/www ${OPENSHIFT_HOMEDIR}/app-root/repo/www
+cp -r ${OPENSHIFT_HOMEDIR}/app-root/repo/php7/.openshift ${OPENSHIFT_HOMEDIR}/app-root/repo/php7/www ${OPENSHIFT_HOMEDIR}/app-root/repo/
 rm -r -f ${OPENSHIFT_HOMEDIR}/app-root/repo/php7
 
 # 编译环境
