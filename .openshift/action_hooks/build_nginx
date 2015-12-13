@@ -1,0 +1,92 @@
+#!/bin/bash
+function install_nginx() {
+#    local pkg=nginx-${NGINX_VERSION}.tar.gz
+    local pkg_pcre=pcre-${PCRE_VERSION}.tar.bz2
+    local pkg_zlib=zlib-${ZLIB_VERSION}.tar.gz
+    local pkg_jemalloc=jemalloc-${JEMALLOC_VERSION}.tar.bz2
+
+    mkdir -p ${BUILD_DIR}
+    mkdir -p ${ROOT_DIR}/etc/nginx
+    pushd ${BUILD_DIR}
+
+    echo "下载 ${pkg_pcre}."
+    wget --output-document=./${pkg_pcre} ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/${pkg_pcre}
+
+    echo "解压 ${pkg_pcre}."
+    tar xfj ${pkg_pcre}
+
+    echo "下载 ${pkg_zlib}."
+    wget http://zlib.net/${pkg_zlib}
+
+    echo "解压 ${pkg_zlib}."
+    tar xfz ${pkg_zlib}
+
+    echo "下载 ${pkg_jemalloc}"
+    wget http://www.canonware.com/download/jemalloc/${pkg_jemalloc}
+
+    echo "解压 ${pkg_jemalloc}"
+    tar xfj ${pkg_jemalloc}
+
+    echo "下载 NGINXCACHE"
+    wget https://github.com/FRiCKLE/ngx_cache_purge/archive/master.zip
+    unzip master.zip
+
+    echo "下载 tengine."
+    wget http://tengine.taobao.org/download/tengine.tar.gz
+
+    echo "解压 tengine."
+    tar xfz tengine.tar.gz
+    pushd tengine-2.1.0
+
+    echo "配置 tengine."
+    ./configure \
+      --prefix=$OPENSHIFT_DATA_DIR/nginx \
+      --with-pcre=${BUILD_DIR}/pcre-8.37 \
+      --with-jemalloc=${BUILD_DIR}/jemalloc-4.0.4 \
+      --add-module=${BUILD_DIR}/ngx_cache_purge-master \
+      --with-ipv6 \
+      --with-http_spdy_module \
+      --with-http_realip_module \
+      --with-http_mp4_module \
+      --with-http_flv_module \
+      --with-http_geoip_module \
+      --with-http_gzip_static_module \
+      --with-http_sub_module \
+      --with-http_ssl_module \
+      --with-http_stub_status_module \
+      --with-http_concat_module \
+      --with-http_auth_request_module \
+      --with-http_addition_module=shared \
+      --with-http_sysguard_module=shared \
+      --with-http_image_filter_module=shared \
+      --with-http_footer_filter_module=shared \
+      --with-http_memcached_module=shared \
+      --with-http_trim_filter_module=shared \
+      --with-http_empty_gif_module=shared
+
+    echo "开始安装."
+    make && make dso_install && make install
+
+    echo "清除所有安装临时文件."
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+function check_nginx() {
+    local nginx_bin=${ROOT_DIR}/nginx/sbin/nginx
+
+    if [[ ! -e  ${nginx_bin} ]]; then
+        echo "nginx not installed."
+        install_nginx
+    else
+        local nginx_version=`${nginx_bin} -v 2>&1|cut -d/ -f2`
+
+        if [[ ${NGINX_VERSION} != ${nginx_version} ]]; then
+            echo "nginx old, version: ${nginx_version}."
+            install_nginx
+        else
+            echo "nginx up to date, version: ${nginx_version}."
+        fi
+    fi
+}
