@@ -52,9 +52,9 @@ check_nginx
 check_php
 
 # Check pecl extensions
-for ext in "${!PHP_PECL[@]}"; do
-    check_pecl ${ext} ${PHP_PECL["$ext"]} ${PHP_PECL_CONFIGURE["$ext"]};
-done
+#for ext in "${!PHP_PECL[@]}"; do
+#    check_pecl ${ext} ${PHP_PECL["$ext"]} ${PHP_PECL_CONFIGURE["$ext"]};
+#done
 
 # Check NodeJS
 #check_node
