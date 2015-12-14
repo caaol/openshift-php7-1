@@ -2,4 +2,4 @@
 
 killall nginx
 killall php-fpm
-ctl_all restart
+killall ruby
