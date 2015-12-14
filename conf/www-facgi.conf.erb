@@ -1,0 +1,52 @@
+server
+    {
+        listen <%= ENV['OPENSHIFT_DIY_IP'] %>:8080;
+        #请修改为自己的域名
+        server_name <%= ENV['OPENSHIFT_GEAR_DNS'] %>;
+        index index.html index.htm index.php default.html default.htm default.php;
+        error_page 404 = /404.html;
+        #请修改为自己网站的存放路径
+        root  <%= ENV['OPENSHIFT_HOMEDIR'] %>app-root/runtime/repo/www;
+		    include  <%= ENV['OPENSHIFT_DATA_DIR'] %>nginx/run/wordpress.conf;
+
+        set $skip_cache 0;
+        #post访问不缓存
+        if ($request_method = POST) {
+            set $skip_cache 1;
+        }
+        #动态查询不缓存
+        if ($query_string != "") {
+            set $skip_cache 1;
+        }
+        #后台等特定页面不缓存（其他需求请自行添加即可）
+        if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
+            set $skip_cache 1;
+        }
+        #这里请参考你网站之前的配置，特别是sock的路径，弄错了就502了！
+        location ~ [^/]\.php(/|$)
+            {
+                try_files $uri =404;
+                fastcgi_pass  unix:<%= ENV['OPENSHIFT_DATA_DIR'] %>php/var/run/php-cgi.sock;
+                fastcgi_index index.php;
+                include fastcgi.conf;
+                #新增的缓存规则
+                fastcgi_cache_bypass $skip_cache;
+                fastcgi_no_cache $skip_cache;
+                add_header X-Cache "$upstream_cache_status From $host";
+                fastcgi_cache WPCACHE;
+                fastcgi_cache_valid 200 301 302 1d;
+        }
+        #缓存清理配置（可选模块，请细看下文说明）
+        location ~ /purge(/.*) {
+            allow <%= ENV['OPENSHIFT_DIY_IP'] %>;
+            deny all;
+            fastcgi_cache_purge WPCACHE "$scheme$request_method$host$1";
+        }
+
+        location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+                access_log off; log_not_found off; expires max;
+        }
+
+        location = /robots.txt { access_log off; log_not_found off; }
+        location ~ /\. { deny  all; access_log off; log_not_found off; }
+}

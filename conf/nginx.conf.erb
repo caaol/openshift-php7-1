@@ -1,0 +1,67 @@
+#user www www;
+worker_processes auto;
+worker_cpu_affinity auto;
+# load modules compiled as Dynamic Shared Object (DSO)
+#
+#dso {
+#    load ngx_http_fastcgi_module.so;
+#    load ngx_http_rewrite_module.so;
+#}
+
+error_log <%= ENV['OPENSHIFT_LOG_DIR'] %>nginx.log crit;
+pid      <%= ENV['OPENSHIFT_LOG_DIR'] %>nginx.pid;
+worker_rlimit_nofile 16384;
+
+events {
+	use epoll;
+	worker_connections 16384;
+	multi_accept on;
+	}
+
+http {
+	include mime.types;
+	default_type application/octet-stream;
+	server_names_hash_bucket_size 128;
+	client_header_buffer_size 32k;
+	open_file_cache max=204800 inactive=20s;
+	open_file_cache_valid 30s;
+  open_file_cache_min_uses 1;
+	large_client_header_buffers 4 64k;
+	client_max_body_size 50m;
+	sendfile on;
+	tcp_nopush on;
+	keepalive_timeout 120;
+	server_tokens off;
+	tcp_nodelay on;
+
+	fastcgi_temp_path /tmp/cache/wpcache/temp;
+  fastcgi_cache_path /tmp/cache/wpcache levels=1:2 keys_zone=WPCACHE:120m inactive=1d max_size=300m;
+	fastcgi_cache_key "$scheme$request_method$host$request_uri";
+	fastcgi_cache WPCACHE;
+	fastcgi_connect_timeout 300;
+	fastcgi_send_timeout 300;
+	fastcgi_read_timeout 300;
+	fastcgi_buffer_size 128K;
+	fastcgi_buffers 4 256k;
+	fastcgi_busy_buffers_size 256K;
+	fastcgi_temp_file_write_size 256K;
+	fastcgi_cache_use_stale error timeout invalid_header http_500;
+  fastcgi_intercept_errors on;
+  fastcgi_cache_valid 200 302 1h;
+  fastcgi_cache_valid 301 1d;
+  fastcgi_cache_valid any 1m;
+  fastcgi_cache_min_uses 1;
+  fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+	gzip on;
+	gzip_disable "msie6";
+	gzip_vary on;
+	gzip_comp_level 6;
+	gzip_min_length 1k;
+	gzip_buffers 4 16k;
+	gzip_http_version 1.1;
+	#gzip_types text/plain application/x-javascript text/css application/xml application/javascript;
+	gzip_types text/plain application/x-javascript text/css text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+
+	include <%= ENV['OPENSHIFT_DATA_DIR'] %>nginx/run/www-facgi.conf;
+}
