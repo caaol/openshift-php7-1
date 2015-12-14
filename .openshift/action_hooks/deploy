@@ -3,15 +3,15 @@
 cd $OPENSHIFT_DATA_DIR
 wget http://acfun.webcrow.jp/php/nginx.conf.erb
 wget http://acfun.webcrow.jp/php/php.ini.erb
-wget http://acfun.webcrow.jp/php/php-fpm.conf
+#wget http://acfun.webcrow.jp/php/php-fpm.conf
 wget http://acfun.webcrow.jp/php/www-facgi.conf.erb
 wget http://acfun.webcrow.jp/php/wordpress.conf
 erb ./nginx.conf.erb >${OPENSHIFT_DATA_DIR}nginx/conf/nginx.conf
 erb ./php.ini.erb >${OPENSHIFT_DATA_DIR}php/etc/php.ini
-mkdir ${OPENSHIFT_DATA_DIR}nginx/run
+mkdir -p ${OPENSHIFT_DATA_DIR}nginx/run
 erb ./www-facgi.conf.erb >${OPENSHIFT_DATA_DIR}nginx/run/www-facgi.conf
 cp ./php-fpm.conf ${OPENSHIFT_DATA_DIR}nginx/conf
 mv ./wordpress.conf ${OPENSHIFT_DATA_DIR}nginx/run
-mkdir /tmp/cache/wpcache/temp
-mkdir ${OPENSHIFT_HOMEDIR}app-root/runtime/repo/www
+mkdir -p /tmp/cache/wpcache/temp
+#mkdir ${OPENSHIFT_HOMEDIR}app-root/runtime/repo/www
 rm -rf nginx.conf.erb php.ini.erb php-fpm.conf www-facgi.conf.erb wordpress.conf
