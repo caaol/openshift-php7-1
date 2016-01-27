@@ -41,7 +41,7 @@ function install_php() {
 
     if [ ! -d php-${PHP_VERSION} ]; then
         echo "Downloading ${pkg}."
-        wget --output-document=./${pkg} hhttp://php.net/distributions/php-${pkg}
+        wget --output-document=./${pkg} http://php.net/distributions/php-${pkg}
 
         echo "Unpacking ${pkg}."
         tar xfz ${pkg}
