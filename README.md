@@ -27,3 +27,6 @@
 
 #详细的安装方法明天发布
 本脚本部分配置借鉴于http://www.51acg.gq/openshift-php7.html
+
+#简单的配制方法已经编写于wiki
+感谢@Rongronggg9协助我 调试并在调试中找到诸多错误。
