@@ -3,7 +3,7 @@ log_level = 2
 
 [[http2]]
 listen = ":8443"
-server_name = ["gp-test-588ce70b.apps.thedigitalgarage.io"]
+server_name = ["go-caaol-8f069c23.apps.thedigitalgarage.io"]
 proxy_fallback = "file://var/www/html"
 pem = """
 -----BEGIN RSA PRIVATE KEY-----
